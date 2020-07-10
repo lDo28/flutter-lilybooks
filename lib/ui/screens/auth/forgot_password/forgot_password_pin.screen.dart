@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
+import 'package:lily_books/bloc/authentication/authentication_bloc.dart';
+import 'package:lily_books/bloc/forgot_countdown/forgot_countdown_bloc.dart';
+import 'package:lily_books/bloc/loading_state/loading_state_bloc.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
-import 'package:lily_books/ui/screens/auth/forgot_countdown/forgot_countdown_bloc.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class ForgotPinScreen extends StatelessWidget {
@@ -44,25 +44,22 @@ class ForgotPinScreen extends StatelessWidget {
           }
         }
       },
-      child: BlocProvider(
-        create: (_) => ForgotCountdownBloc(),
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            leading: BackButton(color: Theme.of(context).primaryColor),
-          ),
-          body: BlocBuilder<ForgotCountdownBloc, int>(
-            builder: (context, time) => ListView(
-              children: [
-                _buildHeader(),
-                SizedBox(height: 50),
-                _buildPinField(context),
-                SizedBox(height: 16),
-                _buildResendCountdown(context, time)
-              ],
-            ),
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: BackButton(color: Theme.of(context).primaryColor),
+        ),
+        body: BlocBuilder<ForgotCountdownBloc, int>(
+          builder: (context, time) => ListView(
+            children: [
+              _buildHeader(),
+              SizedBox(height: 50),
+              _buildPinField(context),
+              SizedBox(height: 16),
+              _buildResendCountdown(context, time)
+            ],
           ),
         ),
       ),

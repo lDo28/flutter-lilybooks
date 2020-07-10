@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lily_books/bloc/auth_type/auth_type_bloc.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
-import 'package:lily_books/ui/screens/auth/auth_type/auth_type_bloc.dart';
 
 class AuthTabWidget extends StatelessWidget {
   final AuthScreen item;

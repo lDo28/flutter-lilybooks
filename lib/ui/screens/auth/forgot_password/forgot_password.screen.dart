@@ -4,9 +4,9 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
+import 'package:lily_books/bloc/authentication/authentication_bloc.dart';
+import 'package:lily_books/bloc/loading_state/loading_state_bloc.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 
 class ForgotScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();

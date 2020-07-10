@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lily_books/bloc/auth_type/auth_type_bloc.dart';
+import 'package:lily_books/bloc/forgot_countdown/forgot_countdown_bloc.dart';
 import 'package:lily_books/ui/screens/auth/authentication.screen.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password.screen.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_change_password.screen.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_pin.screen.dart';
-import 'package:lily_books/ui/screens/auth/hide_password/hide_password_bloc.dart';
 import 'package:lily_books/ui/screens/home/home.screen.dart';
 import 'package:lily_books/ui/screens/splash/splash.screen.dart';
 
@@ -25,19 +26,26 @@ PageRoute<dynamic> onGenerateRoutes(RouteSettings settings) {
     case RoutesName.splash:
       return _getPageRoute(SplashScreen());
     case RoutesName.auth:
-      return _getPageRoute(AuthenticationScreen());
+      return _getPageRoute(
+        BlocProvider(
+          create: (_) => AuthTypeBloc(),
+          child: AuthenticationScreen(),
+        ),
+      );
     case RoutesName.home:
       return _getPageRoute(HomeScreen());
     case RoutesName.forgot:
       return _getPageRoute(ForgotScreen());
     case RoutesName.forgotPin:
-      return _getPageRoute(ForgotPinScreen(model: settings.arguments));
+      return _getPageRoute(
+        BlocProvider(
+          create: (_) => ForgotCountdownBloc(),
+          child: ForgotPinScreen(model: settings.arguments),
+        ),
+      );
     case RoutesName.forgotChangePassword:
       return _getPageRoute(
-        BlocProvider<HidePasswordBloc>(
-          create: (_) => HidePasswordBloc(),
-          child: ForgotChangePasswordScreen(model: settings.arguments),
-        ),
+        ForgotChangePasswordScreen(model: settings.arguments),
       );
     default:
       return _getPageRoute(

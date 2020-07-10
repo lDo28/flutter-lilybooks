@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
+import 'package:lily_books/bloc/auth_type/auth_type_bloc.dart';
+import 'package:lily_books/bloc/authentication/authentication_bloc.dart';
+import 'package:lily_books/bloc/loading_state/loading_state_bloc.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/auth_type/auth_type_bloc.dart';
-import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
-import 'package:lily_books/ui/screens/auth/hide_password/hide_password_bloc.dart';
 import 'package:lily_books/ui/screens/auth/sign_in/sign_in_form.dart';
 import 'package:lily_books/ui/screens/auth/sign_up/sign_up_form.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 import 'package:lily_books/ui/widgets/auth_tab.widget.dart';
 
 class AuthenticationScreen extends StatelessWidget {
@@ -68,22 +67,12 @@ class AuthenticationScreen extends StatelessWidget {
               }
             }
           },
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider<AuthTypeBloc>(
-                create: (_) => AuthTypeBloc(),
-              ),
-              BlocProvider<HidePasswordBloc>(
-                create: (_) => HidePasswordBloc(),
-              ),
-            ],
-            child: BlocBuilder<AuthTypeBloc, AuthScreenType>(
-              builder: (context, type) => ListView(
-                children: [
-                  _buildTabMenu(context, type),
-                  _getForm(type),
-                ],
-              ),
+          child: BlocBuilder<AuthTypeBloc, AuthScreenType>(
+            builder: (context, type) => ListView(
+              children: [
+                _buildTabMenu(context, type),
+                _getForm(type),
+              ],
             ),
           ),
         ),

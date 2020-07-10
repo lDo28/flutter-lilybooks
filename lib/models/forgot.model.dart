@@ -10,6 +10,11 @@ class ForgotModel {
         email: json['email'],
       );
 
+  Map<String, dynamic> toJson() => {
+        "email": this.email,
+        "newPassword": this.newPassword,
+      };
+
   void updateNewPassword(String newPassword) {
     this.newPassword = newPassword;
   }

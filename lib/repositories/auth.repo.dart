@@ -71,13 +71,7 @@ class AuthRepo extends BaseRepo {
   Stream<Resource<bool>> changePassword(ForgotModel forgotModel) async* {
     yield Resource.loading();
     try {
-      await dio.put(
-        'users/forgot/password',
-        data: {
-          "email": forgotModel.email,
-          "newPassword": forgotModel.newPassword
-        },
-      );
+      await dio.put('users/forgot/password', data: forgotModel.toJson());
       yield Resource.success(true);
     } catch (e) {
       if (e is DioError) {
