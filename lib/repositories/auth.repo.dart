@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/api/requests/sign_in.request.dart';
@@ -7,6 +5,7 @@ import 'package:lily_books/api/requests/sign_up.request.dart';
 import 'package:lily_books/api/responses/lily.response.dart';
 import 'package:lily_books/api/responses/user.response.dart';
 import 'package:lily_books/constants.dart';
+import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/repositories/base.repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,12 +44,14 @@ class AuthRepo extends BaseRepo {
     }
   }
 
-  Stream<Resource<String>> forgot(String email) async* {
+  Stream<Resource<ForgotModel>> forgot(String email) async* {
     yield Resource.loading();
     try {
-      var response = await dio.post('users/forgot', data: {"email": email});
-      String code = jsonDecode(response.data)['code'];
-      yield Resource.success(code);
+      var response = await dio.get(
+        'users/forgot',
+        queryParameters: {"email": email},
+      );
+      yield Resource.success(ForgotModel.fromJson(response.data));
     } catch (e) {
       if (e is DioError) {
         var error = LilyResponse.fromJson(e.response.data);
@@ -61,15 +62,30 @@ class AuthRepo extends BaseRepo {
     }
   }
 
-  Stream<Resource<bool>> logout() async* {
+  Stream<Resource<bool>> changePassword(ForgotModel forgotModel) async* {
     yield Resource.loading();
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.remove(PREFS_KEY_TOKEN);
-      prefs.remove(PREFS_KEY_USER_ID);
+      await dio.put(
+        'users/forgot/password',
+        data: {
+          "email": forgotModel.email,
+          "newPassword": forgotModel.newPassword
+        },
+      );
       yield Resource.success(true);
     } catch (e) {
-      yield Resource.failed(e);
+      if (e is DioError) {
+        var error = LilyResponse.fromJson(e.response.data);
+        yield Resource.failed(error.message);
+      } else {
+        yield Resource.failed(e);
+      }
     }
+  }
+
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(PREFS_KEY_TOKEN);
+    prefs.remove(PREFS_KEY_USER_ID);
   }
 }

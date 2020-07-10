@@ -5,11 +5,16 @@ import 'package:lily_books/lily.app.dart';
 import 'package:lily_books/observer/logger.observer.dart';
 import 'package:lily_books/ui/screens/splash/authorization_cubit.dart';
 
+import 'ui/screens/loading_state/loading_state_cubit.dart';
+
 void main() {
   Cubit.observer = LoggerObserver();
   runApp(
-    CubitProvider(
-      create: (_) => AuthorizationCubit(),
+    MultiCubitProvider(
+      providers: [
+        CubitProvider(create: (_) => AuthorizationCubit()),
+        CubitProvider(create: (_) => LoadingStateCubit()),
+      ],
       child: LilyApp(),
     ),
   );

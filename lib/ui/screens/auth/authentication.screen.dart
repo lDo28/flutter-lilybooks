@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
+import 'package:lily_books/routes.dart';
 import 'package:lily_books/ui/screens/auth/auth_type/auth_type_cubit.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
 import 'package:lily_books/ui/screens/auth/hide_password/hide_password_cubit.dart';
 import 'package:lily_books/ui/screens/auth/sign_in/sign_in_form.dart';
 import 'package:lily_books/ui/screens/auth/sign_up/sign_up_form.dart';
-import 'package:lily_books/ui/screens/home/home.screen.dart';
+import 'package:lily_books/ui/screens/splash/authorization_cubit.dart';
 import 'package:lily_books/ui/widgets/auth_tab.widget.dart';
 
 class AuthenticationScreen extends StatelessWidget {
@@ -23,19 +23,10 @@ class AuthenticationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: CubitListener<AuthenticationCubit, AuthenticationState>(
+        child: CubitListener<AuthorizationCubit, AuthorizationState>(
           listener: (context, state) {
-            if (state is SignedIn) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => HomeScreen()),
-              );
-            }
-            if (state is ForgotPassword) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => HomeScreen()),
-              );
+            if (state is Authorized) {
+              Navigator.pushReplacementNamed(context, RoutesName.home);
             }
           },
           child: MultiCubitProvider(
@@ -61,7 +52,7 @@ class AuthenticationScreen extends StatelessWidget {
     );
   }
 
-  Row _buildTabMenu(BuildContext context, AuthScreenType type) {
+  Widget _buildTabMenu(BuildContext context, AuthScreenType type) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: authMenu

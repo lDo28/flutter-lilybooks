@@ -2,11 +2,14 @@ import 'package:cubit/cubit.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lily_books/constants.dart';
+import 'package:lily_books/repositories/auth.repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'authorization_state.dart';
 
 class AuthorizationCubit extends Cubit<AuthorizationState> {
+  final AuthRepo _authRepo = new AuthRepo();
+
   AuthorizationCubit() : super(AuthInitial()) {
     _initSplash();
   }
@@ -27,5 +30,8 @@ class AuthorizationCubit extends Cubit<AuthorizationState> {
 
   void signIn() => emit(Authorized());
 
-  void signOut() => emit(Unauthorized());
+  void signOut() async {
+    await _authRepo.logout();
+    emit(Unauthorized());
+  }
 }

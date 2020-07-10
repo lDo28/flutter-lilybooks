@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
 import 'package:lily_books/api/api_status.dart';
+import 'package:lily_books/routes.dart';
 import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
-import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password.screen.dart';
 import 'package:lily_books/ui/screens/auth/hide_password/hide_password_cubit.dart';
 import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:lily_books/ui/screens/splash/authorization_cubit.dart';
 
 class SignInForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -71,7 +72,7 @@ class SignInForm extends StatelessWidget {
                     case ApiStatus.loading:
                       break;
                     case ApiStatus.success:
-                      context.cubit<AuthenticationCubit>().signedIn();
+                      context.cubit<AuthorizationCubit>().signIn();
                       break;
                     case ApiStatus.failed:
                       Scaffold.of(context).showSnackBar(
@@ -99,10 +100,7 @@ class SignInForm extends StatelessWidget {
   Widget _buildForgotPassword(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => ForgotScreen()),
-        );
+        Navigator.pushNamed(context, RoutesName.forgot);
       },
       child: Text('Forgot Password'),
     );

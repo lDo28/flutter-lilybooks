@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lily_books/ui/screens/splash/splash.screen.dart';
+import 'package:lily_books/routes.dart';
 
 class LilyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -15,7 +15,8 @@ class LilyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      initialRoute: RoutesName.splash,
+      onGenerateRoute: onGenerateRoutes,
     );
   }
 }

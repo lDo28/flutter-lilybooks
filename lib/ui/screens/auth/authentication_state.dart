@@ -9,16 +9,6 @@ class AuthenticationInitial extends AuthenticationState {
   List<Object> get props => [];
 }
 
-class SignedIn extends AuthenticationState {
-  @override
-  List<Object> get props => [];
-}
-
-class ForgotPassword extends AuthenticationState {
-  @override
-  List<Object> get props => [];
-}
-
 class ErrorState extends AuthenticationState {
   final Exception error;
 

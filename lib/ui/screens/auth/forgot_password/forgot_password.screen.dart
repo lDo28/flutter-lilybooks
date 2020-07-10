@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:lily_books/api/api_status.dart';
+import 'package:lily_books/routes.dart';
 import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
 import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
 
@@ -19,8 +21,7 @@ class ForgotScreen extends StatelessWidget {
         elevation: 0,
         leading: BackButton(color: Theme.of(context).primaryColor),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ListView(
         children: [
           _buildHeader(),
           SizedBox(height: 50),
@@ -40,40 +41,8 @@ class ForgotScreen extends StatelessWidget {
           children: [
             _buildEmailTextField(),
             SizedBox(height: 32),
-            GestureDetector(
-              onTap: () async {
-                if (!_formKey.currentState.validate()) return;
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Send email',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 16),
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Transform.rotate(
-                      angle: math.pi * 1.75,
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildSendEmailButton(),
+            SizedBox(height: 32),
           ],
         ),
       ),
@@ -94,10 +63,7 @@ class ForgotScreen extends StatelessWidget {
                 if (!_formKey.currentState.validate()) return;
                 context
                     .cubit<AuthenticationCubit>()
-                    .signUp(
-                      _emailController.text,
-                      _passwordController.text,
-                    )
+                    .forgotPassword(_emailController.text)
                     .listen((resource) {
                   context
                       .cubit<LoadingStateCubit>()
@@ -106,9 +72,11 @@ class ForgotScreen extends StatelessWidget {
                     case ApiStatus.loading:
                       break;
                     case ApiStatus.success:
-                      context
-                          .cubit<AuthTypeCubit>()
-                          .changeType(AuthScreenType.SignIn);
+                      Navigator.pushNamed(
+                        context,
+                        RoutesName.forgotPin,
+                        arguments: resource.data,
+                      );
                       break;
                     case ApiStatus.failed:
                       Scaffold.of(context).showSnackBar(
@@ -117,13 +85,15 @@ class ForgotScreen extends StatelessWidget {
                   }
                 });
               },
-              icon: Icon(
-                Icons.chevron_right,
-                size: 35,
-                color: Colors.white,
+              icon: Transform.rotate(
+                angle: math.pi * 1.75,
+                child: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                ),
               ),
               label: Text(
-                'Sign Up',
+                'Send email',
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
@@ -133,7 +103,7 @@ class ForgotScreen extends StatelessWidget {
     );
   }
 
-  TextFormField _buildEmailTextField() {
+  Widget _buildEmailTextField() {
     return TextFormField(
       autofocus: true,
       controller: _emailController,
@@ -154,7 +124,7 @@ class ForgotScreen extends StatelessWidget {
     );
   }
 
-  Padding _buildHeader() {
+  Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Text(

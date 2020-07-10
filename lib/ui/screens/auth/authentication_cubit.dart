@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/api/requests/sign_in.request.dart';
 import 'package:lily_books/api/requests/sign_up.request.dart';
+import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/repositories/auth.repo.dart';
 
 part 'authentication_state.dart';
@@ -15,8 +16,6 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
 
   Stream<Resource<bool>> signIn(String loginName, String password) =>
       _authRepo.signIn(SignInRequest(loginName: loginName, password: password));
-
-  void signedIn() => emit(SignedIn());
 
   Stream<Resource<bool>> signUp(
     String displayName,
@@ -31,13 +30,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         password: password,
       ));
 
-  Stream<Resource<bool>> forgotPassword(String email) =>
-      _authRepo.signUp(SignUpRequest(
-        displayName: displayName,
-        username: username,
-        email: email,
-        password: password,
-      ));
+  Stream<Resource<ForgotModel>> forgotPassword(String email) =>
+      _authRepo.forgot(email);
 
-  void forgotPassword() => emit(ForgotPassword());
+  Stream<Resource<bool>> changePassword(ForgotModel forgotModel) =>
+      _authRepo.changePassword(forgotModel);
 }
