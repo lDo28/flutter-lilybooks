@@ -2,15 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lily_books/bloc/auth_type/auth_type_bloc.dart';
-import 'package:lily_books/bloc/forgot_countdown/forgot_countdown_bloc.dart';
-import 'package:lily_books/ui/screens/auth/authentication.screen.dart';
-import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password.screen.dart';
-import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_change_password.screen.dart';
-import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_pin.screen.dart';
-import 'package:lily_books/ui/screens/home/home.screen.dart';
-import 'package:lily_books/ui/screens/splash/splash.screen.dart';
+import 'package:lily_books/bloc/blocs.dart';
+import 'package:lily_books/ui/screens/screens.dart';
 
 class RoutesName {
   static const splash = "/";

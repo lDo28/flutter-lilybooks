@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lily_books/bloc/auth_type/auth_type_bloc.dart';
+import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
 
 class AuthTabWidget extends StatelessWidget {

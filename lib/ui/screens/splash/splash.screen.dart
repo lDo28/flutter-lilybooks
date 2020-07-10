@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/bloc/authentication/authentication_bloc.dart';
-import 'package:lily_books/ui/widgets/logo.widget.dart';
+import 'package:lily_books/ui/widgets/widgets.dart';
 
 class SplashScreen extends StatelessWidget {
   @override

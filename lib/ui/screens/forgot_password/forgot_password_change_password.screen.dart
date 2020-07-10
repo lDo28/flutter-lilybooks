@@ -1,11 +1,8 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
-import 'package:lily_books/bloc/authentication/authentication_bloc.dart';
-import 'package:lily_books/bloc/hide_password/hide_password_bloc.dart';
-import 'package:lily_books/bloc/loading_state/loading_state_bloc.dart';
+import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
 
@@ -82,7 +79,7 @@ class ForgotChangePasswordScreen extends StatelessWidget {
                       .add(ChangePassword(forgotModel: _forgotModel));
                 },
                 icon: Transform.rotate(
-                  angle: pi * 1.75,
+                  angle: math.pi * 1.75,
                   child: Icon(
                     Icons.send,
                     color: Colors.white,
