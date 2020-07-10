@@ -1,19 +1,34 @@
-part of 'authentication_cubit.dart';
+part of 'authentication_bloc.dart';
 
-abstract class AuthenticationState extends Equatable {
-  const AuthenticationState();
+@immutable
+abstract class AuthenticationState {}
+
+class AuthenticationInitial extends AuthenticationState {}
+
+class Authorized extends AuthenticationState {}
+
+class SignedInListener extends AuthenticationState {
+  final Resource<bool> resource;
+
+  SignedInListener({@required this.resource});
 }
 
-class AuthenticationInitial extends AuthenticationState {
-  @override
-  List<Object> get props => [];
+class SignedUpListener extends AuthenticationState {
+  final Resource<bool> resource;
+
+  SignedUpListener({@required this.resource});
 }
 
-class ErrorState extends AuthenticationState {
-  final Exception error;
+class ForgotListener extends AuthenticationState {
+  final Resource<ForgotModel> resource;
 
-  ErrorState({@required this.error});
-
-  @override
-  List<Object> get props => [error];
+  ForgotListener({@required this.resource});
 }
+
+class ChangePasswordListener extends AuthenticationState {
+  final Resource<bool> resource;
+
+  ChangePasswordListener({@required this.resource});
+}
+
+class Unauthorized extends AuthenticationState {}

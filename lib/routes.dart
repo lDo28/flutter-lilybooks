@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/ui/screens/auth/authentication.screen.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password.screen.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_change_password.screen.dart';
 import 'package:lily_books/ui/screens/auth/forgot_password/forgot_password_pin.screen.dart';
+import 'package:lily_books/ui/screens/auth/hide_password/hide_password_bloc.dart';
 import 'package:lily_books/ui/screens/home/home.screen.dart';
-import 'package:lily_books/ui/screens/home/home_cubit.dart';
 import 'package:lily_books/ui/screens/splash/splash.screen.dart';
 
 class RoutesName {
@@ -26,28 +25,20 @@ PageRoute<dynamic> onGenerateRoutes(RouteSettings settings) {
     case RoutesName.splash:
       return _getPageRoute(SplashScreen());
     case RoutesName.auth:
-      return _getPageRoute(CubitProvider(
-        create: (_) => AuthenticationCubit(),
-        child: AuthenticationScreen(),
-      ));
+      return _getPageRoute(AuthenticationScreen());
     case RoutesName.home:
-      return _getPageRoute(CubitProvider(
-        create: (_) => HomeCubit(),
-        child: HomeScreen(),
-      ));
+      return _getPageRoute(HomeScreen());
     case RoutesName.forgot:
-      return _getPageRoute(CubitProvider(
-        create: (_) => AuthenticationCubit(),
-        child: ForgotScreen(),
-      ));
+      return _getPageRoute(ForgotScreen());
     case RoutesName.forgotPin:
-      return _getPageRoute(CubitProvider(
-          create: (_) => AuthenticationCubit(),
-          child: ForgotPinScreen(model: settings.arguments)));
+      return _getPageRoute(ForgotPinScreen(model: settings.arguments));
     case RoutesName.forgotChangePassword:
-      return _getPageRoute(CubitProvider(
-          create: (_) => AuthenticationCubit(),
-          child: ForgotChangePasswordScreen(model: settings.arguments)));
+      return _getPageRoute(
+        BlocProvider<HidePasswordBloc>(
+          create: (_) => HidePasswordBloc(),
+          child: ForgotChangePasswordScreen(model: settings.arguments),
+        ),
+      );
     default:
       return _getPageRoute(
         Scaffold(

@@ -1,19 +1,18 @@
-import 'package:cubit/cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/lily.app.dart';
 import 'package:lily_books/observer/logger.observer.dart';
-import 'package:lily_books/ui/screens/splash/authorization_cubit.dart';
-
-import 'ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:lily_books/repositories/auth.repo.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
+import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 
 void main() {
-  Cubit.observer = LoggerObserver();
+  Bloc.observer = LoggerObserver();
   runApp(
-    MultiCubitProvider(
+    MultiBlocProvider(
       providers: [
-        CubitProvider(create: (_) => AuthorizationCubit()),
-        CubitProvider(create: (_) => LoadingStateCubit()),
+        BlocProvider(create: (_) => AuthenticationBloc(AuthRepo())),
+        BlocProvider(create: (_) => LoadingStateBloc()),
       ],
       child: LilyApp(),
     ),

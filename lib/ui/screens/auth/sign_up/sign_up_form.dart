@@ -1,12 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
-import 'package:lily_books/api/api_status.dart';
-import 'package:lily_books/models/auth_screen.model.dart';
-import 'package:lily_books/ui/screens/auth/auth_type/auth_type_cubit.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
-import 'package:lily_books/ui/screens/auth/hide_password/hide_password_cubit.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lily_books/api/requests/sign_up.request.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
+import 'package:lily_books/ui/screens/auth/hide_password/hide_password_bloc.dart';
+import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -55,7 +53,7 @@ class SignUpForm extends StatelessWidget {
   }
 
   Widget _buildPasswordTextField() {
-    return CubitBuilder<HidePasswordCubit, bool>(
+    return BlocBuilder<HidePasswordBloc, bool>(
       builder: (context, hidePassword) => TextFormField(
         obscureText: hidePassword,
         controller: _passwordController,
@@ -64,7 +62,7 @@ class SignUpForm extends StatelessWidget {
           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: GestureDetector(
             child: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
-            onTap: () => context.cubit<HidePasswordCubit>().togglePassword(),
+            onTap: () => context.bloc<HidePasswordBloc>().add(TogglePassword()),
           ),
         ),
         validator: (text) {
@@ -136,7 +134,7 @@ class SignUpForm extends StatelessWidget {
   }
 
   Widget _buildSignUpButton() {
-    return CubitBuilder<LoadingStateCubit, bool>(
+    return BlocBuilder<LoadingStateBloc, bool>(
       builder: (context, loading) => loading
           ? CircularProgressIndicator()
           : RaisedButton.icon(
@@ -147,32 +145,16 @@ class SignUpForm extends StatelessWidget {
               color: Colors.deepPurple,
               onPressed: () async {
                 if (!_formKey.currentState.validate()) return;
-                context
-                    .cubit<AuthenticationCubit>()
-                    .signUp(
-                      _nameController.text,
-                      _usernameController.text,
-                      _emailController.text,
-                      _passwordController.text,
-                    )
-                    .listen((resource) {
-                  context
-                      .cubit<LoadingStateCubit>()
-                      .toggleLoading(resource.status == ApiStatus.loading);
-                  switch (resource.status) {
-                    case ApiStatus.loading:
-                      break;
-                    case ApiStatus.success:
-                      context
-                          .cubit<AuthTypeCubit>()
-                          .changeType(AuthScreenType.SignIn);
-                      break;
-                    case ApiStatus.failed:
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text(resource.message)));
-                      break;
-                  }
-                });
+                context.bloc<AuthenticationBloc>().add(
+                      SignUp(
+                        request: SignUpRequest(
+                          displayName: _nameController.text,
+                          username: _usernameController.text,
+                          email: _emailController.text,
+                          password: _passwordController.text,
+                        ),
+                      ),
+                    );
               },
               icon: Icon(
                 Icons.chevron_right,

@@ -1,9 +1,9 @@
-import 'package:cubit/cubit.dart';
+import 'package:bloc/bloc.dart';
 
-class LoggerObserver extends CubitObserver {
+class LoggerObserver extends BlocObserver {
   @override
-  void onTransition(Cubit cubit, Transition transition) {
+  void onTransition(Bloc bloc, Transition transition) {
     print(transition);
-    super.onTransition(cubit, transition);
+    super.onTransition(bloc, transition);
   }
 }

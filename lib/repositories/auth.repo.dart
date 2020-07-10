@@ -10,6 +10,12 @@ import 'package:lily_books/repositories/base.repo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepo extends BaseRepo {
+  Future<bool> isSignedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey(PREFS_KEY_TOKEN) &&
+        prefs.containsKey(PREFS_KEY_USER_ID);
+  }
+
   Stream<Resource<bool>> signIn(SignInRequest request) async* {
     yield Resource.loading();
     try {
@@ -83,7 +89,7 @@ class AuthRepo extends BaseRepo {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> signOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(PREFS_KEY_TOKEN);
     prefs.remove(PREFS_KEY_USER_ID);

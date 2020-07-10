@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
+import 'package:lily_books/ui/screens/auth/hide_password/hide_password_bloc.dart';
+import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 
 class ForgotChangePasswordScreen extends StatelessWidget {
   final ForgotModel _forgotModel;
@@ -20,27 +21,49 @@ class ForgotChangePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: BackButton(color: Theme.of(context).primaryColor),
-      ),
-      body: ListView(
-        children: [
-          _buildHeader(),
-          SizedBox(height: 50),
-          _buildPinField(context),
-          SizedBox(height: 16),
-          _buildChangePasswordButton(),
-        ],
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is ChangePasswordListener) {
+          context.bloc<LoadingStateBloc>().add(
+                ToggleLoading(
+                  isLoading: state.resource.status == ApiStatus.loading,
+                ),
+              );
+          switch (state.resource.status) {
+            case ApiStatus.loading:
+              break;
+            case ApiStatus.success:
+              Navigator.pushReplacementNamed(context, RoutesName.auth);
+              break;
+            case ApiStatus.failed:
+              _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(content: Text(state.resource.message)));
+              break;
+          }
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: BackButton(color: Theme.of(context).primaryColor),
+        ),
+        body: ListView(
+          children: [
+            _buildHeader(),
+            SizedBox(height: 50),
+            _buildPasswordTextField(),
+            SizedBox(height: 16),
+            _buildChangePasswordButton(),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildChangePasswordButton() {
-    return CubitBuilder<LoadingStateCubit, bool>(builder: (context, loading) {
+    return BlocBuilder<LoadingStateBloc, bool>(builder: (context, loading) {
       return loading
           ? Center(child: CircularProgressIndicator())
           : Padding(
@@ -55,24 +78,8 @@ class ForgotChangePasswordScreen extends StatelessWidget {
                   if (!_formKey.currentState.validate()) return;
                   _forgotModel.updateNewPassword(_newPasswordController.text);
                   context
-                      .cubit<AuthenticationCubit>()
-                      .changePassword(_forgotModel)
-                      .listen((resource) {
-                    context
-                        .cubit<LoadingStateCubit>()
-                        .toggleLoading(resource.status == ApiStatus.loading);
-                    switch (resource.status) {
-                      case ApiStatus.loading:
-                        break;
-                      case ApiStatus.success:
-                        Navigator.pushNamed(context, RoutesName.auth);
-                        break;
-                      case ApiStatus.failed:
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text(resource.message)));
-                        break;
-                    }
-                  });
+                      .bloc<AuthenticationBloc>()
+                      .add(ChangePassword(forgotModel: _forgotModel));
                 },
                 icon: Transform.rotate(
                   angle: pi * 1.75,
@@ -93,31 +100,39 @@ class ForgotChangePasswordScreen extends StatelessWidget {
     });
   }
 
-  Padding _buildPinField(BuildContext context) {
+  Widget _buildPasswordTextField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: Form(
-        key: _formKey,
-        child: TextFormField(
-          autofocus: true,
-          controller: _newPasswordController,
-          validator: (text) {
-            if (text.isEmpty) return 'New Password is empty!';
-            if (text.length < 6) {
-              return 'New Password must be longer than 6 characters.';
-            }
-            return null;
-          },
-          decoration: InputDecoration(
-            labelText: 'New Password',
-            prefixIcon: Icon(Icons.lock_outline),
+      child: BlocBuilder<HidePasswordBloc, bool>(
+        builder: (context, hidePassword) => Form(
+          key: _formKey,
+          child: TextFormField(
+            obscureText: hidePassword,
+            controller: _newPasswordController,
+            decoration: InputDecoration(
+              labelText: 'New Password',
+              prefixIcon: Icon(Icons.lock_outline),
+              suffixIcon: GestureDetector(
+                child: Icon(
+                    hidePassword ? Icons.visibility : Icons.visibility_off),
+                onTap: () =>
+                    context.bloc<HidePasswordBloc>().add(TogglePassword()),
+              ),
+            ),
+            validator: (text) {
+              if (text.isEmpty) return 'New Password is empty!';
+              if (text.length < 6) {
+                return 'New Password must be longer than 6 characters.';
+              }
+              return null;
+            },
           ),
         ),
       ),
     );
   }
 
-  Padding _buildHeader() {
+  Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Text(

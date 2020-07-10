@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
-import 'package:lily_books/ui/screens/auth/forgot_countdown/forgot_countdown_cubit.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
+import 'package:lily_books/ui/screens/auth/forgot_countdown/forgot_countdown_bloc.dart';
+import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class ForgotPinScreen extends StatelessWidget {
@@ -23,24 +23,46 @@ class ForgotPinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CubitProvider(
-      create: (_) => ForgotCountdownCubit(),
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: BackButton(color: Theme.of(context).primaryColor),
-        ),
-        body: CubitBuilder<ForgotCountdownCubit, int>(
-          builder: (context, time) => ListView(
-            children: [
-              _buildHeader(),
-              SizedBox(height: 50),
-              _buildPinField(context),
-              SizedBox(height: 16),
-              _buildResendCountdown(context, time)
-            ],
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is ForgotListener) {
+          context.bloc<LoadingStateBloc>().add(
+                ToggleLoading(
+                  isLoading: state.resource.status == ApiStatus.loading,
+                ),
+              );
+          switch (state.resource.status) {
+            case ApiStatus.loading:
+              break;
+            case ApiStatus.success:
+              _forgotModel.updateCode(state.resource.data.code);
+              break;
+            case ApiStatus.failed:
+              Scaffold.of(context).showSnackBar(
+                  SnackBar(content: Text(state.resource.message)));
+              break;
+          }
+        }
+      },
+      child: BlocProvider(
+        create: (_) => ForgotCountdownBloc(),
+        child: Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            elevation: 0,
+            leading: BackButton(color: Theme.of(context).primaryColor),
+          ),
+          body: BlocBuilder<ForgotCountdownBloc, int>(
+            builder: (context, time) => ListView(
+              children: [
+                _buildHeader(),
+                SizedBox(height: 50),
+                _buildPinField(context),
+                SizedBox(height: 16),
+                _buildResendCountdown(context, time)
+              ],
+            ),
           ),
         ),
       ),
@@ -53,26 +75,10 @@ class ForgotPinScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: FlatButton(
               onPressed: () {
-                context.cubit<ForgotCountdownCubit>().start();
+                context.bloc<ForgotCountdownBloc>().add(StartCountdown());
                 context
-                    .cubit<AuthenticationCubit>()
-                    .forgotPassword(_forgotModel.email)
-                    .listen((resource) {
-                  context
-                      .cubit<LoadingStateCubit>()
-                      .toggleLoading(resource.status == ApiStatus.loading);
-                  switch (resource.status) {
-                    case ApiStatus.loading:
-                      break;
-                    case ApiStatus.success:
-                      _forgotModel.updateCode(resource.data.code);
-                      break;
-                    case ApiStatus.failed:
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text(resource.message)));
-                      break;
-                  }
-                });
+                    .bloc<AuthenticationBloc>()
+                    .add(Forgot(email: _forgotModel.email));
               },
               child: Text('Resend email with PIN code',
                   style: TextStyle(
@@ -104,7 +110,7 @@ class ForgotPinScreen extends StatelessWidget {
         onCompleted: (code) {
           if (code == _forgotModel.code) {
             _errorController.close();
-            context.cubit<ForgotCountdownCubit>().cancel();
+            context.bloc<ForgotCountdownBloc>().add(StopCountdown());
             Navigator.pushNamed(context, RoutesName.forgotChangePassword,
                 arguments: _forgotModel);
           } else {

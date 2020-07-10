@@ -2,31 +2,59 @@ import 'dart:math' as math;
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/auth/authentication_cubit.dart';
-import 'package:lily_books/ui/screens/loading_state/loading_state_cubit.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
+import 'package:lily_books/ui/screens/loading_state/loading_state_bloc.dart';
 
 class ForgotScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final TextEditingController _emailController =
       TextEditingController(text: 'linhdpp28@gmail.com');
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: BackButton(color: Theme.of(context).primaryColor),
-      ),
-      body: ListView(
-        children: [
-          _buildHeader(),
-          SizedBox(height: 50),
-          _buildForm(context),
-        ],
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
+      listener: (context, state) {
+        if (state is ForgotListener) {
+          context.bloc<LoadingStateBloc>().add(
+                ToggleLoading(
+                  isLoading: state.resource.status == ApiStatus.loading,
+                ),
+              );
+          switch (state.resource.status) {
+            case ApiStatus.loading:
+              break;
+            case ApiStatus.success:
+              Navigator.pushNamed(
+                context,
+                RoutesName.forgotPin,
+                arguments: state.resource.data,
+              );
+              break;
+            case ApiStatus.failed:
+              _scaffoldKey.currentState.showSnackBar(
+                  SnackBar(content: Text(state.resource.message)));
+              break;
+          }
+        }
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: BackButton(color: Theme.of(context).primaryColor),
+        ),
+        body: ListView(
+          children: [
+            _buildHeader(),
+            SizedBox(height: 50),
+            _buildForm(context),
+          ],
+        ),
       ),
     );
   }
@@ -50,7 +78,7 @@ class ForgotScreen extends StatelessWidget {
   }
 
   Widget _buildSendEmailButton() {
-    return CubitBuilder<LoadingStateCubit, bool>(
+    return BlocBuilder<LoadingStateBloc, bool>(
       builder: (context, loading) => loading
           ? CircularProgressIndicator()
           : RaisedButton.icon(
@@ -61,29 +89,9 @@ class ForgotScreen extends StatelessWidget {
               color: Colors.deepPurple,
               onPressed: () async {
                 if (!_formKey.currentState.validate()) return;
-                context
-                    .cubit<AuthenticationCubit>()
-                    .forgotPassword(_emailController.text)
-                    .listen((resource) {
-                  context
-                      .cubit<LoadingStateCubit>()
-                      .toggleLoading(resource.status == ApiStatus.loading);
-                  switch (resource.status) {
-                    case ApiStatus.loading:
-                      break;
-                    case ApiStatus.success:
-                      Navigator.pushNamed(
-                        context,
-                        RoutesName.forgotPin,
-                        arguments: resource.data,
-                      );
-                      break;
-                    case ApiStatus.failed:
-                      Scaffold.of(context).showSnackBar(
-                          SnackBar(content: Text(resource.message)));
-                      break;
-                  }
-                });
+                context.bloc<AuthenticationBloc>().add(
+                      Forgot(email: _emailController.text),
+                    );
               },
               icon: Transform.rotate(
                 angle: math.pi * 1.75,

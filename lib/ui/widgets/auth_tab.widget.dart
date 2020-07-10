@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
-import 'package:lily_books/ui/screens/auth/auth_type/auth_type_cubit.dart';
+import 'package:lily_books/ui/screens/auth/auth_type/auth_type_bloc.dart';
 
 class AuthTabWidget extends StatelessWidget {
   final AuthScreen item;
@@ -16,7 +16,8 @@ class AuthTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.cubit<AuthTypeCubit>().changeType(item.type),
+      onTap: () =>
+          context.bloc<AuthTypeBloc>().add(AuthTypeChange(type: item.type)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

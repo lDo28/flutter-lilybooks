@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_cubit/flutter_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lily_books/routes.dart';
-import 'package:lily_books/ui/screens/splash/authorization_cubit.dart';
+import 'package:lily_books/ui/screens/auth/authentication_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CubitListener<AuthorizationCubit, AuthorizationState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is Unauthorized) {
           Navigator.pushReplacementNamed(context, RoutesName.auth);
@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Sign out'),
                 onTap: () {
-                  context.cubit<AuthorizationCubit>().signOut();
+                  context.bloc<AuthenticationBloc>().add(SignOut());
                 },
               ),
             ],
