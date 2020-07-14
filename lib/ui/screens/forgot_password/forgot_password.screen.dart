@@ -1,9 +1,9 @@
 import 'dart:math' as math;
 
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/bloc/blocs.dart';
+import 'package:lily_books/extensions/string.exts.dart';
 import 'package:lily_books/routes.dart';
 
 class ForgotScreen extends StatelessWidget {
@@ -122,7 +122,7 @@ class ForgotScreen extends StatelessWidget {
         if (text.isEmpty) {
           return 'Email is empty';
         }
-        if (!EmailValidator.validate(text)) {
+        if (!text.emailValid()) {
           return 'Wrong email format';
         }
         return null;

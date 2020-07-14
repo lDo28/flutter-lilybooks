@@ -1,7 +1,7 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:lily_books/api/requests/sign_up.request.dart';
 import 'package:lily_books/bloc/blocs.dart';
+import 'package:lily_books/extensions/string.exts.dart';
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -88,7 +88,7 @@ class SignUpForm extends StatelessWidget {
         if (text.isEmpty) {
           return 'Email is empty';
         }
-        if (!EmailValidator.validate(text)) {
+        if (!!text.emailValid()) {
           return 'Wrong email format';
         }
         return null;
