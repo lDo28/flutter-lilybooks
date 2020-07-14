@@ -11,3 +11,4 @@ A simple demo app using Flutter.
 - [Email Validator](https://pub.dev/packages/email_validator)
 - [Dio](https://pub.dev/packages/dio)
 - [Pin Code Fields](https://pub.dev/packages/pin_code_fields)
+- [RxDart](https://pub.dev/packages/rxdart)
