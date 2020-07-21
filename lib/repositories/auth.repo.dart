@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:lily_books/api/api_status.dart';
+import 'package:hive/hive.dart';
 import 'package:lily_books/api/requests/sign_in.request.dart';
 import 'package:lily_books/api/requests/sign_up.request.dart';
 import 'package:lily_books/api/responses/lily.response.dart';
@@ -7,85 +7,74 @@ import 'package:lily_books/api/responses/user.response.dart';
 import 'package:lily_books/constants.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/repositories/base.repo.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepo extends BaseRepo {
-  Future<bool> isSignedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.containsKey(PREFS_KEY_TOKEN) &&
-        prefs.containsKey(PREFS_KEY_USER_ID);
-  }
+  Box<dynamic> get hiveBox => Hive.box(PREFS_BOX);
 
-  Stream<Resource<bool>> signIn(SignInRequest request) async* {
-    yield Resource.loading();
+  bool get isSignedIn =>
+      hiveBox.get(PREFS_KEY_TOKEN) != null &&
+      hiveBox.get(PREFS_KEY_USER_ID) != null;
+
+  Future<String> signIn(SignInRequest request) async {
     try {
       var response = await dio.post('users/login', data: request.toJson());
       UserResponse user = UserResponse.fromJson(response.data);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString(PREFS_KEY_TOKEN, user.token);
-      prefs.setString(PREFS_KEY_USER_ID, user.userId);
-      yield Resource.success(true);
+      await hiveBox.put(PREFS_KEY_TOKEN, user.token);
+      await hiveBox.put(PREFS_KEY_USER_ID, user.userId);
+      return null;
     } catch (e) {
       if (e is DioError) {
         var error = LilyResponse.fromJson(e.response.data);
-        yield Resource.failed(error.message);
-      } else {
-        yield Resource.failed(e);
+        return error.message;
       }
+      return e;
     }
   }
 
-  Stream<Resource<bool>> signUp(SignUpRequest request) async* {
-    yield Resource.loading();
+  Future<String> signUp(SignUpRequest request) async {
     try {
       await dio.post('users/register', data: request.toJson());
-      yield Resource.success(true);
+      return null;
     } catch (e) {
       if (e is DioError) {
         var error = LilyResponse.fromJson(e.response.data);
-        yield Resource.failed(error.message);
-      } else {
-        yield Resource.failed(e);
+        return error.message;
       }
+      return e;
     }
   }
 
-  Stream<Resource<ForgotModel>> forgot(String email) async* {
-    yield Resource.loading();
+  Future<ForgotModel> forgot(String email) async {
     try {
       var response = await dio.get(
         'users/forgot',
         queryParameters: {"email": email},
       );
-      yield Resource.success(ForgotModel.fromJson(response.data));
+      return ForgotModel.fromJson(response.data);
     } catch (e) {
       if (e is DioError) {
         var error = LilyResponse.fromJson(e.response.data);
-        yield Resource.failed(error.message);
-      } else {
-        yield Resource.failed(e);
+        return ForgotModel.error(error.message);
       }
+      return ForgotModel.error(e);
     }
   }
 
-  Stream<Resource<bool>> changePassword(ForgotModel forgotModel) async* {
-    yield Resource.loading();
+  Future<String> changePassword(ForgotModel forgotModel) async {
     try {
       await dio.put('users/forgot/password', data: forgotModel.toJson());
-      yield Resource.success(true);
+      return null;
     } catch (e) {
       if (e is DioError) {
         var error = LilyResponse.fromJson(e.response.data);
-        yield Resource.failed(error.message);
-      } else {
-        yield Resource.failed(e);
+        return error.message;
       }
+      return e;
     }
   }
 
   Future<void> signOut() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove(PREFS_KEY_TOKEN);
-    prefs.remove(PREFS_KEY_USER_ID);
+    await hiveBox.delete(PREFS_KEY_TOKEN);
+    await hiveBox.delete(PREFS_KEY_USER_ID);
   }
 }
