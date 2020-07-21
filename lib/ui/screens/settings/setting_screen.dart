@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/bloc/theme_mode/theme_mode_bloc.dart';
+import 'package:lily_books/generated/l10n.dart';
 import 'package:lily_books/models/theme_mode.model.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -10,12 +11,64 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: Text(S.of(context).settingTitle),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             _buildThemeMode(),
+            SizedBox(height: 32),
+            _buildLanguage(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLanguage() {
+    return BlocBuilder<LanguageBloc, String>(
+      builder: (context, languageCode) => Container(
+        width: MediaQuery.of(context).size.width * .8,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.language,
+                  size: 50,
+                ),
+                SizedBox(width: 16),
+                Text(
+                  S.of(context).settingLanguageTitle,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ],
+            ),
+            DropdownButton(
+              value: languageCode,
+              isExpanded: true,
+              items: [
+                DropdownMenuItem(
+                  child: Text(
+                    S.of(context).settingLanguageEnglish,
+                  ),
+                  value: 'en',
+                ),
+                DropdownMenuItem(
+                  child: Text(
+                    S.of(context).settingLanguageVietnamese,
+                  ),
+                  value: 'vi',
+                ),
+              ],
+              onChanged: (v) {
+                context
+                    .bloc<LanguageBloc>()
+                    .add(ChangeLanguage(languageCode: v));
+              },
+            ),
           ],
         ),
       ),
@@ -45,8 +98,7 @@ class SettingScreen extends StatelessWidget {
                 ),
                 SizedBox(width: 16),
                 Text(
-                  'Dark Mode',
-                  textAlign: TextAlign.center,
+                  S.of(context).settingThemeModeTitle,
                   style: TextStyle(fontSize: 20),
                 ),
               ],
@@ -60,7 +112,7 @@ class SettingScreen extends StatelessWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: themeModes
+              children: getThemeModes(context)
                   .map(
                     (theme) => GestureDetector(
                       onTap: () {

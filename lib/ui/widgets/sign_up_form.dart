@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/bloc/sign_up/sign_up_bloc.dart';
 import 'package:lily_books/extensions/string.exts.dart';
+import 'package:lily_books/generated/l10n.dart';
 
 class SignUpForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey();
@@ -29,7 +30,7 @@ class SignUpForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           SizedBox(height: 50),
           _buildForm(context),
           SizedBox(height: 32),
@@ -46,9 +47,9 @@ class SignUpForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildDisplayNameTextField(),
-            _buildUsernameTextField(),
-            _buildEmailTextField(),
+            _buildDisplayNameTextField(context),
+            _buildUsernameTextField(context),
+            _buildEmailTextField(context),
             _buildPasswordTextField(),
             SizedBox(height: 32),
             _buildSignUpButton(),
@@ -64,7 +65,7 @@ class SignUpForm extends StatelessWidget {
         obscureText: hidePassword,
         controller: _passwordController,
         decoration: InputDecoration(
-          labelText: 'Password',
+          labelText: S.of(context).signUpPassword,
           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: GestureDetector(
             child: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
@@ -84,13 +85,13 @@ class SignUpForm extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailTextField() {
+  Widget _buildEmailTextField(BuildContext context) {
     return TextFormField(
       autofocus: true,
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        labelText: 'Email',
+        labelText: S.of(context).signUpEmail,
         prefixIcon: Icon(Icons.alternate_email),
       ),
       validator: (text) {
@@ -105,12 +106,12 @@ class SignUpForm extends StatelessWidget {
     );
   }
 
-  Widget _buildUsernameTextField() {
+  Widget _buildUsernameTextField(BuildContext context) {
     return TextFormField(
       autofocus: true,
       controller: _usernameController,
       decoration: InputDecoration(
-        labelText: 'Username',
+        labelText: S.of(context).signUpUsername,
         prefixIcon: Icon(Icons.supervised_user_circle),
       ),
       validator: (text) {
@@ -122,12 +123,12 @@ class SignUpForm extends StatelessWidget {
     );
   }
 
-  Widget _buildDisplayNameTextField() {
+  Widget _buildDisplayNameTextField(BuildContext context) {
     return TextFormField(
       autofocus: true,
       controller: _nameController,
       decoration: InputDecoration(
-        labelText: 'Display Name',
+        labelText: S.of(context).signUpDisplayName,
         prefixIcon: Icon(Icons.person_outline),
       ),
       validator: (text) {
@@ -166,7 +167,7 @@ class SignUpForm extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               label: Text(
-                'Sign Up',
+                S.of(context).signUpAction,
                 style: TextStyle(
                   fontSize: 20,
                   color: Theme.of(context).colorScheme.onSecondary,
@@ -176,11 +177,11 @@ class SignUpForm extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Text(
-        'Create\naccount',
+        S.of(context).signUpMessage,
         style: TextStyle(
           fontSize: 35,
           color: Colors.deepOrange,

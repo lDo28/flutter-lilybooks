@@ -1,3 +1,33 @@
 {
-  "@@locale": "vi"
+  "@@locale": "vi",
+
+  "appName": "Lily Books",
+
+  "authActionSignIn": "Đăng Nhập",
+  "authActionSignUp": "Đăng Ký",
+
+  "signInMessage": "Chào mừng bạn\ntrở lại",
+  "signInUsernameEmail": "Tên đăng nhập/Email",
+  "signInPassword": "Mật khẩu",
+  "signInAction": "Đăng Nhập",
+  "signInActionForgot": "Quên mật khẩu?",
+
+  "signUpMessage": "Tạo\ntài khoản",
+  "signUpDisplayName": "Tên hiển thị",
+  "signUpUsername": "Tên đăng nhập",
+  "signUpEmail": "Email",
+  "signUpPassword": "Mật khẩu",
+  "signUpAction": "Đăng ký",
+
+  "drawerSettings": "Tuỳ chỉnh",
+  "drawerSignOut": "Đăng xuất",
+
+  "settingTitle": "Tuỳ chỉnh",
+  "settingThemeModeTitle": "Giao diện",
+  "settingThemeModeAuto": "Tự động",
+  "settingThemeModeLight": "Sáng",
+  "settingThemeModeDark": "Tối",
+  "settingLanguageTitle": "Ngôn ngữ",
+  "settingLanguageEnglish": "Tiếng Anh (English)",
+  "settingLanguageVietnamese": "Tiếng Việt"
 }

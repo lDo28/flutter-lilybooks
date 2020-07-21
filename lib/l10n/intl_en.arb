@@ -1,3 +1,33 @@
 {
-  "@@locale": "en"
+  "@@locale": "en",
+
+  "appName": "Lily Books",
+
+  "authActionSignIn": "Sign In",
+  "authActionSignUp": "Sign Up",
+
+  "signInMessage": "Welcome\nback",
+  "signInUsernameEmail": "Username/Email",
+  "signInPassword": "Password",
+  "signInAction": "Sign In",
+  "signInActionForgot": "Forgot Password?",
+  
+  "signUpMessage": "Create\naccount",
+  "signUpDisplayName": "Display name",
+  "signUpUsername": "Username",
+  "signUpEmail": "Email",
+  "signUpPassword": "Password",
+  "signUpAction": "Sign Up",
+
+  "drawerSettings": "Settings",
+  "drawerSignOut": "Sign out",
+
+  "settingTitle": "Settings",
+  "settingThemeModeTitle": "Theme Mode",
+  "settingThemeModeAuto": "Auto",
+  "settingThemeModeLight": "Light",
+  "settingThemeModeDark": "Dark",
+  "settingLanguageTitle": "Language",
+  "settingLanguageEnglish": "English",
+  "settingLanguageVietnamese": "Vietnamese"
 }

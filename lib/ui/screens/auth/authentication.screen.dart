@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lily_books/bloc/blocs.dart';
-import 'package:lily_books/bloc/sign_up/sign_up_bloc.dart';
 import 'package:lily_books/models/auth_screen.model.dart';
 import 'package:lily_books/repositories/auth.repo.dart';
 import 'package:lily_books/routes.dart';
 import 'package:lily_books/ui/widgets/widgets.dart';
+import 'package:websafe_svg/websafe_svg.dart';
 
 class AuthenticationScreen extends StatelessWidget {
   _getForm(AuthScreenType type) {
@@ -43,6 +43,7 @@ class AuthenticationScreen extends StatelessWidget {
               children: [
                 _buildTabMenu(context, type),
                 _getForm(type),
+                _buildLanguage(context),
               ],
             ),
           ),
@@ -51,10 +52,39 @@ class AuthenticationScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildLanguage(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () => context
+              .bloc<LanguageBloc>()
+              .add(ChangeLanguage(languageCode: 'en')),
+          child: WebsafeSvg.asset(
+            'assets/icons/flag_us.svg',
+            width: 50,
+            height: 50,
+          ),
+        ),
+        SizedBox(width: 16),
+        GestureDetector(
+          onTap: () => context
+              .bloc<LanguageBloc>()
+              .add(ChangeLanguage(languageCode: 'vi')),
+          child: WebsafeSvg.asset(
+            'assets/icons/flag_vn.svg',
+            width: 50,
+            height: 50,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTabMenu(BuildContext context, AuthScreenType type) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
-      children: authMenu
+      children: getAuthMenu(context)
           .map((item) => AuthTabWidget(item: item, type: type))
           .toList(),
     );

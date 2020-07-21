@@ -21,6 +21,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-
+    "appName" : MessageLookupByLibrary.simpleMessage("Lily Books"),
+    "authActionSignIn" : MessageLookupByLibrary.simpleMessage("Đăng Nhập"),
+    "authActionSignUp" : MessageLookupByLibrary.simpleMessage("Đăng Ký"),
+    "drawerSettings" : MessageLookupByLibrary.simpleMessage("Tuỳ chỉnh"),
+    "drawerSignOut" : MessageLookupByLibrary.simpleMessage("Đăng xuất"),
+    "settingLanguageEnglish" : MessageLookupByLibrary.simpleMessage("Tiếng Anh (English)"),
+    "settingLanguageTitle" : MessageLookupByLibrary.simpleMessage("Ngôn ngữ"),
+    "settingLanguageVietnamese" : MessageLookupByLibrary.simpleMessage("Tiếng Việt"),
+    "settingThemeModeAuto" : MessageLookupByLibrary.simpleMessage("Tự động"),
+    "settingThemeModeDark" : MessageLookupByLibrary.simpleMessage("Tối"),
+    "settingThemeModeLight" : MessageLookupByLibrary.simpleMessage("Sáng"),
+    "settingThemeModeTitle" : MessageLookupByLibrary.simpleMessage("Giao diện"),
+    "settingTitle" : MessageLookupByLibrary.simpleMessage("Tuỳ chỉnh"),
+    "signInAction" : MessageLookupByLibrary.simpleMessage("Đăng Nhập"),
+    "signInActionForgot" : MessageLookupByLibrary.simpleMessage("Quên mật khẩu?"),
+    "signInMessage" : MessageLookupByLibrary.simpleMessage("Chào mừng bạn\ntrở lại"),
+    "signInPassword" : MessageLookupByLibrary.simpleMessage("Mật khẩu"),
+    "signInUsernameEmail" : MessageLookupByLibrary.simpleMessage("Tên đăng nhập/Email"),
+    "signUpAction" : MessageLookupByLibrary.simpleMessage("Đăng ký"),
+    "signUpDisplayName" : MessageLookupByLibrary.simpleMessage("Tên hiển thị"),
+    "signUpEmail" : MessageLookupByLibrary.simpleMessage("Email"),
+    "signUpMessage" : MessageLookupByLibrary.simpleMessage("Tạo\ntài khoản"),
+    "signUpPassword" : MessageLookupByLibrary.simpleMessage("Mật khẩu"),
+    "signUpUsername" : MessageLookupByLibrary.simpleMessage("Tên đăng nhập")
   };
 }

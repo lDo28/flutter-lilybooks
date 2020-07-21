@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/repositories/auth.repo.dart';
 import 'package:lily_books/ui/screens/screens.dart';
-import 'package:lily_books/ui/screens/settings/setting_screen.dart';
 
 // Routes name for push
 class RoutesName {

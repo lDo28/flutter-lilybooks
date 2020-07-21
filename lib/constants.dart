@@ -1,5 +1,6 @@
-const String PREFS_BOX = "lily_books";
-const String PREFS_KEY_TOKEN = "token";
-const String PREFS_KEY_USER_ID = "user_id";
-const String PREFS_KEY_THEME_MODE = "theme_mode";
-const String PREFS_KEY_LANGUAGE = "language";
+const String BOX_USER = "lily_user";
+const String BOX_KEY_USER = "user";
+
+const String BOX_CONFIG = "lily_config";
+const String BOX_KEY_THEME_MODE = "theme_mode";
+const String BOX_KEY_LANGUAGE = "language";

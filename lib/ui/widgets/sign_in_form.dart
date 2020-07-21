@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/bloc/sign_in/sign_in_bloc.dart';
+import 'package:lily_books/generated/l10n.dart';
 import 'package:lily_books/routes.dart';
 
 class SignInForm extends StatelessWidget {
@@ -25,7 +26,7 @@ class SignInForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildHeader(),
+          _buildHeader(context),
           SizedBox(height: 50),
           _buildForm(context),
           SizedBox(height: 32),
@@ -42,8 +43,8 @@ class SignInForm extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildEmailTextField(),
-            _buildPasswordTextField(),
+            _buildEmailTextField(context),
+            _buildPasswordTextField(context),
             SizedBox(height: 32),
             _buildSignInButton(),
             _buildForgotPassword(context),
@@ -78,7 +79,7 @@ class SignInForm extends StatelessWidget {
                 color: Theme.of(context).colorScheme.onSecondary,
               ),
               label: Text(
-                'Sign In',
+                S.of(context).signInAction,
                 style: TextStyle(
                   fontSize: 20,
                   color: Theme.of(context).colorScheme.onSecondary,
@@ -93,17 +94,17 @@ class SignInForm extends StatelessWidget {
       onPressed: () {
         Navigator.pushNamed(context, RoutesName.forgot);
       },
-      child: Text('Forgot Password'),
+      child: Text(S.of(context).signInActionForgot),
     );
   }
 
-  Widget _buildPasswordTextField() {
+  Widget _buildPasswordTextField(BuildContext context) {
     return BlocBuilder<HidePasswordBloc, bool>(
       builder: (context, hidePassword) => TextFormField(
         obscureText: hidePassword,
         controller: _passwordController,
         decoration: InputDecoration(
-          labelText: 'Password',
+          labelText: S.of(context).signInPassword,
           prefixIcon: Icon(Icons.lock_outline),
           suffixIcon: GestureDetector(
             child: Icon(hidePassword ? Icons.visibility : Icons.visibility_off),
@@ -123,13 +124,13 @@ class SignInForm extends StatelessWidget {
     );
   }
 
-  Widget _buildEmailTextField() {
+  Widget _buildEmailTextField(BuildContext context) {
     return TextFormField(
       autofocus: true,
       controller: _loginNameController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
-        labelText: 'Username/Email',
+        labelText: S.of(context).signInUsernameEmail,
         prefixIcon: Icon(Icons.alternate_email),
       ),
       validator: (text) {
@@ -141,11 +142,11 @@ class SignInForm extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
       child: Text(
-        'Welcome\nback',
+        S.of(context).signInMessage,
         style: TextStyle(
           fontSize: 35,
           color: Colors.deepOrange,

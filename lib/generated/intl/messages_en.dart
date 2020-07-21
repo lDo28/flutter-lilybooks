@@ -21,6 +21,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
-
+    "appName" : MessageLookupByLibrary.simpleMessage("Lily Books"),
+    "authActionSignIn" : MessageLookupByLibrary.simpleMessage("Sign In"),
+    "authActionSignUp" : MessageLookupByLibrary.simpleMessage("Sign Up"),
+    "drawerSettings" : MessageLookupByLibrary.simpleMessage("Settings"),
+    "drawerSignOut" : MessageLookupByLibrary.simpleMessage("Sign out"),
+    "settingLanguageEnglish" : MessageLookupByLibrary.simpleMessage("English"),
+    "settingLanguageTitle" : MessageLookupByLibrary.simpleMessage("Language"),
+    "settingLanguageVietnamese" : MessageLookupByLibrary.simpleMessage("Vietnamese"),
+    "settingThemeModeAuto" : MessageLookupByLibrary.simpleMessage("Auto"),
+    "settingThemeModeDark" : MessageLookupByLibrary.simpleMessage("Dark"),
+    "settingThemeModeLight" : MessageLookupByLibrary.simpleMessage("Light"),
+    "settingThemeModeTitle" : MessageLookupByLibrary.simpleMessage("Theme Mode"),
+    "settingTitle" : MessageLookupByLibrary.simpleMessage("Settings"),
+    "signInAction" : MessageLookupByLibrary.simpleMessage("Sign In"),
+    "signInActionForgot" : MessageLookupByLibrary.simpleMessage("Forgot Password?"),
+    "signInMessage" : MessageLookupByLibrary.simpleMessage("Welcome\nback"),
+    "signInPassword" : MessageLookupByLibrary.simpleMessage("Password"),
+    "signInUsernameEmail" : MessageLookupByLibrary.simpleMessage("Username/Email"),
+    "signUpAction" : MessageLookupByLibrary.simpleMessage("Sign Up"),
+    "signUpDisplayName" : MessageLookupByLibrary.simpleMessage("Display name"),
+    "signUpEmail" : MessageLookupByLibrary.simpleMessage("Email"),
+    "signUpMessage" : MessageLookupByLibrary.simpleMessage("Create\naccount"),
+    "signUpPassword" : MessageLookupByLibrary.simpleMessage("Password"),
+    "signUpUsername" : MessageLookupByLibrary.simpleMessage("Username")
   };
 }

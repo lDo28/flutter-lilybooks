@@ -5,16 +5,23 @@ import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/bloc/theme_mode/theme_mode_bloc.dart';
 import 'package:lily_books/constants.dart';
 import 'package:lily_books/lily.app.dart';
+import 'package:lily_books/models/user.model.dart';
 import 'package:lily_books/observer/logger.observer.dart';
 import 'package:lily_books/repositories/auth.repo.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Init logger observer for Bloc
   Bloc.observer = LoggerObserver();
 
   // init Hive
-  await Hive.initFlutter();
-  await Hive.openBox(PREFS_BOX);
+  final appDocumentDirectory = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter(appDocumentDirectory.path);
+  await Hive.openBox(BOX_USER);
+  await Hive.openBox(BOX_CONFIG);
+  Hive.registerAdapter(UserAdapter());
 
   runApp(
     RepositoryProvider(
@@ -22,6 +29,7 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => ThemeModeBloc()),
+          BlocProvider(create: (_) => LanguageBloc()),
           BlocProvider(
             create: (context) => AuthenticationBloc(
               context.repository<AuthRepo>(),

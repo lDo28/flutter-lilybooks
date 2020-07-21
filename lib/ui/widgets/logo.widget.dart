@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lily_books/generated/l10n.dart';
 
 class Logo extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class Logo extends StatelessWidget {
           ),
           SizedBox(height: 16),
           Text(
-            'Lily Books',
+            S.of(context).appName,
             style: Theme.of(context).textTheme.headline4,
           ),
           SizedBox(height: 32),

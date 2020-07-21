@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:lily_books/generated/l10n.dart';
 
 enum AuthScreenType { SignIn, SignUp }
 
@@ -9,7 +10,9 @@ class AuthScreen {
   AuthScreen({@required this.type, @required this.title});
 }
 
-var authMenu = [
-  AuthScreen(type: AuthScreenType.SignIn, title: 'Sign In'),
-  AuthScreen(type: AuthScreenType.SignUp, title: 'Sign Up'),
-];
+List<AuthScreen> getAuthMenu(BuildContext context) => [
+      AuthScreen(
+          type: AuthScreenType.SignIn, title: S.of(context).authActionSignIn),
+      AuthScreen(
+          type: AuthScreenType.SignUp, title: S.of(context).authActionSignUp),
+    ];

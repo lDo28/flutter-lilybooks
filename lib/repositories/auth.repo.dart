@@ -6,21 +6,19 @@ import 'package:lily_books/api/responses/lily.response.dart';
 import 'package:lily_books/api/responses/user.response.dart';
 import 'package:lily_books/constants.dart';
 import 'package:lily_books/models/forgot.model.dart';
+import 'package:lily_books/models/user.model.dart';
 import 'package:lily_books/repositories/base.repo.dart';
 
 class AuthRepo extends BaseRepo {
-  Box<dynamic> get hiveBox => Hive.box(PREFS_BOX);
+  Box<dynamic> get userBox => Hive.box(BOX_USER);
 
-  bool get isSignedIn =>
-      hiveBox.get(PREFS_KEY_TOKEN) != null &&
-      hiveBox.get(PREFS_KEY_USER_ID) != null;
+  bool get isSignedIn => userBox.isNotEmpty && userBox.getAt(0) != null;
 
   Future<String> signIn(SignInRequest request) async {
     try {
       var response = await dio.post('users/login', data: request.toJson());
       UserResponse user = UserResponse.fromJson(response.data);
-      await hiveBox.put(PREFS_KEY_TOKEN, user.token);
-      await hiveBox.put(PREFS_KEY_USER_ID, user.userId);
+      userBox.add(User.copyFrom(user));
       return null;
     } catch (e) {
       if (e is DioError) {
@@ -74,7 +72,6 @@ class AuthRepo extends BaseRepo {
   }
 
   Future<void> signOut() async {
-    await hiveBox.delete(PREFS_KEY_TOKEN);
-    await hiveBox.delete(PREFS_KEY_USER_ID);
+    await userBox.clear();
   }
 }

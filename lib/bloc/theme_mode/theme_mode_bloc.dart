@@ -9,11 +9,11 @@ import 'package:meta/meta.dart';
 part 'theme_mode_event.dart';
 
 class ThemeModeBloc extends Bloc<ThemeModeEvent, ThemeMode> {
-  static final Box<dynamic> _hiveBox = Hive.box(PREFS_BOX);
+  static final Box<dynamic> _hiveBox = Hive.box(BOX_CONFIG);
 
   ThemeModeBloc()
       : super(ThemeMode.values[_hiveBox.get(
-          PREFS_KEY_THEME_MODE,
+          BOX_KEY_THEME_MODE,
           defaultValue: 0,
         )]);
 
@@ -22,7 +22,7 @@ class ThemeModeBloc extends Bloc<ThemeModeEvent, ThemeMode> {
     ThemeModeEvent event,
   ) async* {
     if (event is ChangeThemeMode) {
-      _hiveBox.put(PREFS_KEY_THEME_MODE, event.mode.index);
+      _hiveBox.put(BOX_KEY_THEME_MODE, event.mode.index);
       yield event.mode;
     }
   }
