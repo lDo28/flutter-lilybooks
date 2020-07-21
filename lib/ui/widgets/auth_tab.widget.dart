@@ -12,8 +12,17 @@ class AuthTabWidget extends StatelessWidget {
     @required this.type,
   }) : super(key: key);
 
+  Color getTextColor(BuildContext context, isSelected) {
+    if (Theme.of(context).brightness == Brightness.light) {
+      return isSelected ? Colors.black : Colors.black54;
+    } else {
+      return isSelected ? Colors.white : Colors.white54;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isSelected = item.type == type;
     return GestureDetector(
       onTap: () =>
           context.bloc<AuthTypeBloc>().add(AuthTypeChange(type: item.type)),
@@ -26,13 +35,13 @@ class AuthTabWidget extends StatelessWidget {
             Text(
               item.title,
               style: TextStyle(
-                fontSize: item.type == type ? 20 : 14,
-                color: item.type == type ? Colors.black : Colors.black54,
+                fontSize: isSelected ? 20 : 14,
+                color: getTextColor(context, isSelected),
               ),
             ),
             SizedBox(height: 4),
             Visibility(
-              visible: item.type == type,
+              visible: isSelected,
               child: Container(
                 height: 4,
                 width: 25,

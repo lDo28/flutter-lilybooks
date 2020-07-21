@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
@@ -18,33 +17,27 @@ class ForgotChangePasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<ChangePasswordBloc, ChangePasswordState>(
       listener: (context, state) {
-        if (state is ChangePasswordListener) {
-          context.bloc<LoadingStateBloc>().add(
-                ToggleLoading(
-                  isLoading: state.resource.status == ApiStatus.loading,
-                ),
-              );
-          switch (state.resource.status) {
-            case ApiStatus.loading:
-              break;
-            case ApiStatus.success:
-              Navigator.pushReplacementNamed(context, RoutesName.auth);
-              break;
-            case ApiStatus.failed:
-              _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(content: Text(state.resource.message)));
-              break;
-          }
+        context
+            .bloc<LoadingStateBloc>()
+            .add(ToggleLoading(isLoading: state is ChangePasswordLoading));
+        if (state is ChangePasswordSuccess) {
+          Navigator.pushReplacementNamed(context, RoutesName.auth);
+        }
+        if (state is ChangePasswordFailed) {
+          _scaffoldKey.currentState
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.transparent,
           elevation: 0,
-          leading: BackButton(color: Theme.of(context).primaryColor),
+          leading: BackButton(color: Theme.of(context).colorScheme.onSurface),
         ),
         body: ListView(
           children: [
@@ -70,26 +63,26 @@ class ForgotChangePasswordScreen extends StatelessWidget {
                   vertical: 8,
                   horizontal: 32,
                 ),
-                color: Colors.deepPurple,
+                color: Theme.of(context).primaryColor,
                 onPressed: () async {
                   if (!_formKey.currentState.validate()) return;
                   _forgotModel.updateNewPassword(_newPasswordController.text);
                   context
-                      .bloc<AuthenticationBloc>()
+                      .bloc<ChangePasswordBloc>()
                       .add(ChangePassword(forgotModel: _forgotModel));
                 },
                 icon: Transform.rotate(
                   angle: math.pi * 1.75,
                   child: Icon(
                     Icons.send,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 ),
                 label: Text(
                   'Change password',
                   style: TextStyle(
                     fontSize: 20,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 ),
               ),

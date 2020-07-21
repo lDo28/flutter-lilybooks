@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/extensions/string.exts.dart';
 import 'package:lily_books/routes.dart';
@@ -14,37 +13,32 @@ class ForgotScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<ForgotBloc, ForgotState>(
       listener: (context, state) {
-        if (state is ForgotListener) {
-          context.bloc<LoadingStateBloc>().add(
-                ToggleLoading(
-                  isLoading: state.resource.status == ApiStatus.loading,
-                ),
-              );
-          switch (state.resource.status) {
-            case ApiStatus.loading:
-              break;
-            case ApiStatus.success:
-              Navigator.pushNamed(
-                context,
-                RoutesName.forgotPin,
-                arguments: state.resource.data,
-              );
-              break;
-            case ApiStatus.failed:
-              _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(content: Text(state.resource.message)));
-              break;
-          }
+        context
+            .bloc<LoadingStateBloc>()
+            .add(ToggleLoading(isLoading: state is ForgotLoading));
+
+        if (state is ForgotSuccess) {
+          Navigator.pushReplacementNamed(
+            context,
+            RoutesName.forgotPin,
+            arguments: state.forgotModel,
+          );
+        }
+        if (state is ForgotFailed) {
+          _scaffoldKey.currentState
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.transparent,
           elevation: 0,
-          leading: BackButton(color: Theme.of(context).primaryColor),
+          leading: BackButton(color: Theme.of(context).colorScheme.onSurface),
         ),
         body: ListView(
           children: [
@@ -81,28 +75,28 @@ class ForgotScreen extends StatelessWidget {
           ? CircularProgressIndicator()
           : RaisedButton.icon(
               padding: EdgeInsets.symmetric(
-                vertical: 8,
+                vertical: 16,
                 horizontal: 32,
               ),
-              color: Colors.deepPurple,
+              color: Theme.of(context).primaryColor,
               onPressed: () async {
                 if (!_formKey.currentState.validate()) return;
-                context.bloc<AuthenticationBloc>().add(
-                      Forgot(email: _emailController.text),
-                    );
+                context
+                    .bloc<ForgotBloc>()
+                    .add(Forgot(email: _emailController.text));
               },
               icon: Transform.rotate(
                 angle: math.pi * 1.75,
                 child: Icon(
                   Icons.send,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
               label: Text(
                 'Send email',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             ),

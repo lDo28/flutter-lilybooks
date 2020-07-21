@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lily_books/api/requests/sign_up.request.dart';
 import 'package:lily_books/bloc/blocs.dart';
+import 'package:lily_books/bloc/sign_up/sign_up_bloc.dart';
 import 'package:lily_books/extensions/string.exts.dart';
 
 class SignUpForm extends StatelessWidget {
@@ -16,7 +16,16 @@ class SignUpForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return BlocListener<SignUpBloc, SignUpState>(
+      listener: (context, state) {
+        context
+            .bloc<LoadingStateBloc>()
+            .add(ToggleLoading(isLoading: state is SignUpLoading));
+        if (state is SignUpFailed) {
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -88,7 +97,7 @@ class SignUpForm extends StatelessWidget {
         if (text.isEmpty) {
           return 'Email is empty';
         }
-        if (!!text.emailValid()) {
+        if (!text.emailValid()) {
           return 'Wrong email format';
         }
         return null;
@@ -139,30 +148,28 @@ class SignUpForm extends StatelessWidget {
                 vertical: 8,
                 horizontal: 32,
               ),
-              color: Colors.deepPurple,
+              color: Theme.of(context).primaryColor,
               onPressed: () async {
                 if (!_formKey.currentState.validate()) return;
-                context.bloc<AuthenticationBloc>().add(
+                context.bloc<SignUpBloc>().add(
                       SignUp(
-                        request: SignUpRequest(
-                          displayName: _nameController.text,
-                          username: _usernameController.text,
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        ),
+                        displayName: _nameController.text,
+                        username: _usernameController.text,
+                        email: _emailController.text,
+                        password: _passwordController.text,
                       ),
                     );
               },
               icon: Icon(
                 Icons.chevron_right,
                 size: 35,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSecondary,
               ),
               label: Text(
                 'Sign Up',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             ),

@@ -3,12 +3,17 @@ class ForgotModel {
   String code;
   String newPassword;
 
-  ForgotModel({this.email, this.code, this.newPassword});
+  String errorMessage;
+
+  ForgotModel({this.email, this.code, this.newPassword, this.errorMessage});
 
   factory ForgotModel.fromJson(Map<String, dynamic> json) => ForgotModel(
         code: json['code'],
         email: json['email'],
       );
+
+  factory ForgotModel.error(String message) =>
+      ForgotModel(errorMessage: message);
 
   Map<String, dynamic> toJson() => {
         "email": this.email,

@@ -19,10 +19,17 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             children: [
               ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Settings'),
+                onTap: () {
+                  Navigator.popAndPushNamed(context, RoutesName.settings);
+                },
+              ),
+              ListTile(
                 leading: Icon(Icons.exit_to_app),
                 title: Text('Sign out'),
                 onTap: () {
-                  context.bloc<AuthenticationBloc>().add(SignOut());
+                  context.bloc<AuthenticationBloc>().add(SignedOut());
                 },
               ),
             ],

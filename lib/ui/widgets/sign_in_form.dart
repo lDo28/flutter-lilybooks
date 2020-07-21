@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lily_books/api/requests/sign_in.request.dart';
 import 'package:lily_books/bloc/blocs.dart';
+import 'package:lily_books/bloc/sign_in/sign_in_bloc.dart';
 import 'package:lily_books/routes.dart';
 
 class SignInForm extends StatelessWidget {
@@ -12,14 +12,25 @@ class SignInForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildHeader(),
-        SizedBox(height: 50),
-        _buildForm(context),
-        SizedBox(height: 32),
-      ],
+    return BlocListener<SignInBloc, SignInState>(
+      listener: (context, state) {
+        context
+            .bloc<LoadingStateBloc>()
+            .add(ToggleLoading(isLoading: state is SignInLoading));
+        if (state is SignInFailed) {
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(),
+          SizedBox(height: 50),
+          _buildForm(context),
+          SizedBox(height: 32),
+        ],
+      ),
     );
   }
 
@@ -51,27 +62,26 @@ class SignInForm extends StatelessWidget {
                 vertical: 8,
                 horizontal: 32,
               ),
-              color: Colors.deepPurple,
+              color: Theme.of(context).primaryColor,
               onPressed: () async {
                 if (!_formKey.currentState.validate()) return;
-                context.bloc<AuthenticationBloc>().add(
+                context.bloc<SignInBloc>().add(
                       SignIn(
-                        request: SignInRequest(
-                            loginName: _loginNameController.text,
-                            password: _passwordController.text),
+                        loginName: _loginNameController.text,
+                        password: _passwordController.text,
                       ),
                     );
               },
               icon: Icon(
                 Icons.chevron_right,
                 size: 35,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSecondary,
               ),
               label: Text(
                 'Sign In',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             ),

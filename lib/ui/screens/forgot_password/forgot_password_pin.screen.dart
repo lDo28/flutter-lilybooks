@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:lily_books/api/api_status.dart';
 import 'package:lily_books/bloc/blocs.dart';
 import 'package:lily_books/models/forgot.model.dart';
 import 'package:lily_books/routes.dart';
@@ -20,33 +19,27 @@ class ForgotPinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthenticationBloc, AuthenticationState>(
+    return BlocListener<ForgotBloc, ForgotState>(
       listener: (context, state) {
-        if (state is ForgotListener) {
-          context.bloc<LoadingStateBloc>().add(
-                ToggleLoading(
-                  isLoading: state.resource.status == ApiStatus.loading,
-                ),
-              );
-          switch (state.resource.status) {
-            case ApiStatus.loading:
-              break;
-            case ApiStatus.success:
-              _forgotModel.updateCode(state.resource.data.code);
-              break;
-            case ApiStatus.failed:
-              Scaffold.of(context).showSnackBar(
-                  SnackBar(content: Text(state.resource.message)));
-              break;
-          }
+        context
+            .bloc<LoadingStateBloc>()
+            .add(ToggleLoading(isLoading: state is ForgotLoading));
+        if (state is ForgotSuccess) {
+          _forgotModel.updateCode(state.forgotModel.code);
+        }
+        if (state is ForgotFailed) {
+          Scaffold.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).brightness == Brightness.light
+              ? Colors.white
+              : Colors.transparent,
           elevation: 0,
-          leading: BackButton(color: Theme.of(context).primaryColor),
+          leading: BackButton(color: Theme.of(context).colorScheme.onSurface),
         ),
         body: BlocBuilder<ForgotCountdownBloc, int>(
           builder: (context, time) => ListView(
@@ -71,7 +64,7 @@ class ForgotPinScreen extends StatelessWidget {
               onPressed: () {
                 context.bloc<ForgotCountdownBloc>().add(StartCountdown());
                 context
-                    .bloc<AuthenticationBloc>()
+                    .bloc<ForgotBloc>()
                     .add(Forgot(email: _forgotModel.email));
               },
               child: Text('Resend email with PIN code',
@@ -105,8 +98,11 @@ class ForgotPinScreen extends StatelessWidget {
           if (code == _forgotModel.code) {
             _errorController.close();
             context.bloc<ForgotCountdownBloc>().add(StopCountdown());
-            Navigator.pushNamed(context, RoutesName.forgotChangePassword,
-                arguments: _forgotModel);
+            Navigator.pushReplacementNamed(
+              context,
+              RoutesName.forgotChangePassword,
+              arguments: _forgotModel,
+            );
           } else {
             _errorController.add(ErrorAnimationType.shake);
             _scaffoldKey.currentState
